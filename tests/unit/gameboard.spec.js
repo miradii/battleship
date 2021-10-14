@@ -63,8 +63,7 @@ test("check if all ships are sunk", () => {
   gameBoard.receiveAttack(6, 7);
   //sinking ship 3
   gameBoard.receiveAttack(3, 2);
-  gameBoard.receiveAttack(4, 2);
-  //sinking ship 4
+  gameBoard.receiveAttack(4, 2); //sinking ship 4
   gameBoard.receiveAttack(7, 2);
   gameBoard.receiveAttack(7, 3);
   gameBoard.receiveAttack(7, 4);
@@ -73,4 +72,60 @@ test("check if all ships are sunk", () => {
   expect(gameBoard.areAllShipSunk()).toBe(true);
 });
 
-//TODO make place ship so it throws when you place it on occupied cells
+test("if the given coordinates are full or out of bounds should checkCordinates should return false", () => {
+  const ship1 = createShip(4);
+  const ship2 = createShip(4);
+  //a vertical ship
+  ship2.changeDirection();
+
+  const gameBoard = createGameBoard();
+
+  gameBoard.placeShip(ship1, 3, 4);
+  gameBoard.placeShip(ship2, 2, 4);
+
+  // all the space first ship occupies
+  expect(gameBoard.checkCordinates(3, 4)).toBe(false);
+  expect(gameBoard.checkCordinates(4, 4)).toBe(false);
+  expect(gameBoard.checkCordinates(5, 4)).toBe(false);
+  expect(gameBoard.checkCordinates(6, 4)).toBe(false);
+
+  //all the space second ship occupies
+  expect(gameBoard.checkCordinates(2, 4)).toBe(false);
+  expect(gameBoard.checkCordinates(2, 5)).toBe(false);
+  expect(gameBoard.checkCordinates(2, 6)).toBe(false);
+  expect(gameBoard.checkCordinates(2, 7)).toBe(false);
+
+  //check if index is out of bounds
+  expect(gameBoard.checkCordinates(3, -1)).toBe(false);
+  expect(gameBoard.checkCordinates(12, 4)).toBe(false);
+  expect(gameBoard.checkCordinates(3, -1)).toBe(false);
+  expect(gameBoard.checkCordinates(0, 10)).toBe(false);
+  expect(gameBoard.checkCordinates(10, 0)).toBe(false);
+});
+
+test("if we can place ship at the given coordinates", () => {
+  const ship1 = createShip(4);
+  const ship2 = createShip(4);
+  //a vertical ship
+  ship2.changeDirection();
+
+  const gameBoard = createGameBoard();
+
+  gameBoard.placeShip(ship1, 3, 4);
+  gameBoard.placeShip(ship2, 2, 4);
+
+  expect(gameBoard.isThereSpaceAt(3, 4, ship1)).toBe(false);
+  expect(gameBoard.isThereSpaceAt(1, 4, ship1)).toBe(false);
+  expect(gameBoard.isThereSpaceAt(5, 4, ship1)).toBe(false);
+  expect(gameBoard.isThereSpaceAt(0, 4, ship1)).toBe(false);
+  expect(gameBoard.isThereSpaceAt(10, 4, ship1)).toBe(false);
+  expect(gameBoard.isThereSpaceAt(7, 4, ship1)).toBe(false);
+  expect(gameBoard.isThereSpaceAt(3, 5, ship1)).toBe(true);
+  expect(gameBoard.isThereSpaceAt(2, 4, ship2)).toBe(false);
+  expect(gameBoard.isThereSpaceAt(2, 0, ship2)).toBe(true);
+  expect(gameBoard.isThereSpaceAt(2, 9, ship2)).toBe(false);
+  expect(gameBoard.isThereSpaceAt(2, 7, ship2)).toBe(false);
+  expect(gameBoard.isThereSpaceAt(2, 7, ship2)).toBe(false);
+  expect(gameBoard.isThereSpaceAt(5, 5, ship2)).toBe(true);
+  expect(gameBoard.isThereSpaceAt(2, 8, ship2)).toBe(false);
+});

@@ -1,4 +1,3 @@
-
 export function createGameBoard() {
   return {
     grid: Array.from(Array(10), () => new Array(10)),
@@ -57,6 +56,28 @@ export function createGameBoard() {
     areAllShipSunk() {
       let res = true;
       this.shipsOnTheBoard.forEach((ship) => (res = res && ship.isSunk()));
+      return res;
+    },
+
+    checkCordinates(x, y) {
+      if (x > 9 || x < 0 || y > 9 || y < 0 || this.grid[y][x] != undefined) {
+        return false;
+      } else {
+        return true;
+      }
+    },
+
+    isThereSpaceAt(x, y, ship) {
+      let res = true;
+      if (ship.isHorizontal) {
+        for (let i = x; i < x + ship.length; i++) {
+          res = res && this.checkCordinates(i, y);
+        }
+      } else {
+        for (let i = y; i < y + ship.length; i++) {
+          res = res && this.checkCordinates(x, i);
+        }
+      }
       return res;
     },
   };
