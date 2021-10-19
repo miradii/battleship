@@ -1,7 +1,10 @@
 import { createGameBoard } from "./GameBoard";
-//import { createPlayer } from "./Player";
+import { createPlayer } from "./Player";
 import { createShip } from "./Ship";
 function startGame() {
+  const turn = [];
+  turn["player"] = true;
+  turn["com"] = false;
   const playerShips = [];
   playerShips.push(createShip(2));
   playerShips.push(createShip(3));
@@ -20,10 +23,10 @@ function startGame() {
   const comGameBoard = createGameBoard();
   ranomizeShips(playerGameBoard, playerShips);
   ranomizeShips(comGameBoard, comShips);
+  const player = createPlayer(true, comGameBoard, turn);
+  const comPlayer = createPlayer(false, playerGameBoard, turn);
 
-  return { playerGameBoard, comGameBoard };
-  //const player1 = createPlayer(true, playerGameBoard);
-  //const comPlayer = createPlayer(false, comGameBoard);
+  return { player, comPlayer };
 }
 function ranomizeShips(aGameBoard, anArrayOfShips) {
   anArrayOfShips.forEach((ship) => {

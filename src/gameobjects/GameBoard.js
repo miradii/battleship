@@ -34,9 +34,8 @@ export function createGameBoard() {
       return ship;
     },
 
-    receiveAttack(xCordinate, yCordinate) {
+    receiveAttack(yCordinate, xCordinate) {
       const attackedCell = this.grid[yCordinate][xCordinate];
-
       if (attackedCell > 0) {
         const attackedShipId = this.grid[yCordinate][xCordinate];
         const attackedShip = this.shipsOnTheBoard.get(attackedShipId);
