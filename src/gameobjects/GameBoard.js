@@ -6,7 +6,7 @@ export function createGameBoard() {
 
     numberOfShips: 0,
 
-    placeShip(ship, xCordinate, yCordinate) {
+    placeShip(ship, xCordinate, yCordinate, id) {
       this.numberOfShips++;
       let startingPoint = 0;
 
@@ -27,14 +27,42 @@ export function createGameBoard() {
       let shipCordinates = Array(ship.length).fill(startingPoint);
 
       shipCordinates = shipCordinates.map((el, i) => el + i);
-      ship.setCoordinates(shipCordinates);
-
-      this.shipsOnTheBoard.set(this.numberOfShips, ship);
+      ship.setCoordinates(
+        shipCordinates,
+        ship.isHorizontal ? yCordinate : xCordinate
+      );
+      const shipId = id || this.numberOfShips;
+      this.shipsOnTheBoard.set(shipId, ship);
 
       return ship;
     },
-
-    receiveAttack(yCordinate, xCordinate) {
+    reposition(shipId, xCordinate, yCordinate) {
+      const ship = this.shipsOnTheBoard.get(shipId);
+      if (!this.isThereSpaceAt(xCordinate, yCordinate, ship)) {
+        throw new Error("no space for that ship there");
+      }
+      this.shipsOnTheBoard.delete(shipId);
+      let prevHorizontal;
+      if (ship.fixedCordinate.x == null) {
+        prevHorizontal = true;
+      } else {
+        prevHorizontal = false;
+      }
+      const startingPoint = ship.getCoordinates()[0];
+      if (prevHorizontal) {
+        const exY = ship.fixedCordinate.y;
+        for (let i = startingPoint; i < startingPoint + ship.length; i++) {
+          this.grid[exY][i] = undefined;
+        }
+      } else {
+        const exX = ship.fixedCordinate.x;
+        for (let i = startingPoint; i < startingPoint + ship.length; i++) {
+          this.grid[i][exX] = undefined;
+        }
+      }
+      this.placeShip(ship, xCordinate, yCordinate, shipId);
+    },
+    receiveAttack(xCordinate, yCordinate) {
       const attackedCell = this.grid[yCordinate][xCordinate];
       if (attackedCell > 0) {
         const attackedShipId = this.grid[yCordinate][xCordinate];

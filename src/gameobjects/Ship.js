@@ -3,6 +3,7 @@ function createShip(lengthInput) {
     length: lengthInput,
     coordinates: [],
     isHorizontal: true,
+    fixedCordinate: { x: null, y: null },
 
     isSunk() {
       return (
@@ -10,8 +11,13 @@ function createShip(lengthInput) {
         this.coordinates.reduce((acc, position) => acc && position < 0, true)
       );
     },
-    setCoordinates(array) {
+    setCoordinates(array, fixed) {
       this.coordinates = array;
+      if (this.isHorizontal) {
+        this.fixedCordinate = { x: null, y: fixed };
+      } else {
+        this.fixedCordinate = { x: fixed, y: null };
+      }
     },
     getCoordinates() {
       return this.coordinates;

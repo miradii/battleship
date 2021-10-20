@@ -21,8 +21,9 @@ test("we can set the coordinates", () => {
 
 test("we can get the correct coordinates", () => {
   const ship = createShip(4);
-  ship.setCoordinates([1, 2, 3, 4]);
+  ship.setCoordinates([1, 2, 3, 4], 2);
   expect(ship.getCoordinates()).toStrictEqual([1, 2, 3, 4]);
+  expect(ship.fixedCordinate).toStrictEqual({ x: null, y: 2 });
 });
 
 test("the ship has a hit method", () => {
@@ -32,14 +33,14 @@ test("the ship has a hit method", () => {
 
 test("when we hit the ship at a given position the given coordinate turns negative to mark where it's hit", () => {
   const ship = createShip(4);
-  ship.setCoordinates([1, 2, 3, 4]);
+  ship.setCoordinates([1, 2, 3, 4], 2);
   ship.hit(2);
   expect(ship.getCoordinates()).toStrictEqual([1, -2, 3, 4]);
 });
 
 test("when all positions of the ship are hit it is sunk", () => {
   const ship = createShip(4);
-  ship.setCoordinates([1, 2, 3, 4]);
+  ship.setCoordinates([1, 2, 3, 4], 4);
   ship.hit(1);
   ship.hit(2);
   ship.hit(3);

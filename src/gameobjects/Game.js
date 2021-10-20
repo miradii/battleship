@@ -5,6 +5,7 @@ function startGame() {
   const turn = [];
   turn["player"] = true;
   turn["com"] = false;
+  const gameState = { playing: false, paused: true, over: false };
   const playerShips = [];
   playerShips.push(createShip(2));
   playerShips.push(createShip(3));
@@ -21,14 +22,14 @@ function startGame() {
 
   const playerGameBoard = createGameBoard();
   const comGameBoard = createGameBoard();
-  ranomizeShips(playerGameBoard, playerShips);
-  ranomizeShips(comGameBoard, comShips);
+  randomizeShips(playerGameBoard, playerShips);
+  randomizeShips(comGameBoard, comShips);
   const player = createPlayer(true, comGameBoard, turn);
   const comPlayer = createPlayer(false, playerGameBoard, turn);
 
-  return { player, comPlayer };
+  return { player, comPlayer, gameState };
 }
-function ranomizeShips(aGameBoard, anArrayOfShips) {
+function randomizeShips(aGameBoard, anArrayOfShips) {
   anArrayOfShips.forEach((ship) => {
     let x = -1;
     let y = -1;

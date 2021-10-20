@@ -5,6 +5,7 @@
       <GameBoard
         :gameboard="playerboard"
         :isPlayerBoard="true"
+        :gameState="state"
         :key="playerKey"
       />
     </div>
@@ -13,9 +14,21 @@
       <GameBoard
         :gameboard="comboard"
         :isPlayerBoard="false"
+        :gameState="state"
         @shot="handleRound"
         :key="comKey"
       />
+    </div>
+    <div class="controls">
+      <button v-if="state.over" @click="handleStart" id="startBtn">
+        New Game
+      </button>
+      <button v-if="state.playing" id="stopBtn" @click="handleStop">
+        Stop Game
+      </button>
+      <button v-if="state.paused" id="stopBtn" @click="handleStart">
+        Start Game
+      </button>
     </div>
   </div>
 </template>
@@ -24,6 +37,7 @@
 import { startGame } from "./gameobjects/Game";
 import GameBoard from "./components/GameBoard.vue";
 import { ref } from "@vue/reactivity";
+import { watch } from "@vue/runtime-core";
 
 export default {
   name: "App",
@@ -31,24 +45,68 @@ export default {
     GameBoard,
   },
   setup() {
-    const playerboard = ref(null);
-    const comboard = ref(null);
-    const { player, comPlayer } = startGame();
+    // put everything we get from a game object on a ref so they are reactive
+    let playerboard = ref(null);
+    let comboard = ref(null);
+    let state = ref(null);
+    let game = startGame();
+    let { player, comPlayer, gameState } = game;
     playerboard.value = comPlayer.enemyBoard;
     comboard.value = player.enemyBoard;
-
+    state.value = gameState;
     //By updating these keys we can rerender a component
-    let playerKey = ref(0);
-    let comKey = ref(2000);
+    let playerKey = ref(true);
+    let comKey = ref(true);
 
     //clickHandlers
     const handleRound = (x, y) => {
+      console.log("here");
       player.play(x, y);
-      comKey.value--;
       comPlayer.play();
-      playerKey.value++;
+      (comKey.value = !comKey.value), (playerKey.value = !comKey.value);
     };
-    return { playerboard, comboard, handleRound, playerKey, comKey };
+    watch(state, () => {
+      (comKey.value = !comKey.value), (playerKey.value = !comKey.value);
+    });
+    const handleStart = () => {
+      if (state.value.paused) {
+        state.value = {
+          playing: true,
+          paused: false,
+          over: false,
+        };
+      } else {
+        game = startGame();
+        const {
+          player: newplayer,
+          comPlayer: newcomPlayer,
+          gameState: newgameState,
+        } = game;
+        player = newplayer;
+        comPlayer = newcomPlayer;
+        gameState = newgameState;
+        playerboard.value = comPlayer.enemyBoard;
+        comboard.value = player.enemyBoard;
+        state.value = gameState;
+      }
+    };
+    const handleStop = () => {
+      state.value = {
+        playing: false,
+        paused: false,
+        over: true,
+      };
+    };
+    return {
+      playerboard,
+      comboard,
+      handleRound,
+      playerKey,
+      comKey,
+      state,
+      handleStart,
+      handleStop,
+    };
   },
 };
 </script>

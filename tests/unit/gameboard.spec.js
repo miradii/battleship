@@ -129,3 +129,19 @@ test("if we can place ship at the given coordinates", () => {
   expect(gameBoard.isThereSpaceAt(5, 5, ship2)).toBe(true);
   expect(gameBoard.isThereSpaceAt(2, 8, ship2)).toBe(false);
 });
+
+test("we can reposition a ship given the id and coordinates", () => {
+  const ship1 = createShip(4);
+  const ship2 = createShip(4);
+  //a vertical ship
+  ship2.changeDirection();
+
+  const gameBoard = createGameBoard();
+
+  gameBoard.placeShip(ship1, 3, 4);
+  gameBoard.placeShip(ship2, 2, 4);
+
+  gameBoard.reposition(1, 6, 3);
+  expect(ship1.getCoordinates()).toStrictEqual([6, 7, 8, 9]);
+  expect(gameBoard.isThereSpaceAt(3, 4, ship1)).toBe(true);
+});

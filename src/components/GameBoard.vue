@@ -1,6 +1,15 @@
 <template>
-  <div class="board" :class="{ player: isPlayerBoard, com: !isPlayerBoard }">
-    <div class="row" v-for="(row, xIndex) in gameboard.grid" :key="row">
+  <div
+    class="board"
+    :class="{
+      player: isPlayerBoard,
+      com: !isPlayerBoard,
+      active:
+        (isPlayerBoard && gameState.paused) ||
+        (gameState.playing && !isPlayerBoard),
+    }"
+  >
+    <div class="row" v-for="(row, yIndex) in gameboard.grid" :key="row">
       <div
         @click="handleCellClick(xIndex, yIndex)"
         class="cell"
@@ -12,7 +21,7 @@
         }"
         :data-x="xIndex"
         :data-y="yIndex"
-        v-for="(cell, yIndex) in row"
+        v-for="(cell, xIndex) in row"
         :key="cell"
       >
         <span class="missed" v-if="cell == -Infinity"> &#9675;</span>
@@ -26,12 +35,13 @@
 
 <script>
 export default {
-  props: ["gameboard", "isPlayerBoard"],
+  props: ["gameboard", "isPlayerBoard", "gameState"],
   setup(props, { emit }) {
     function handleCellClick(x, y) {
-      if (props.isPlayerBoard) {
+      if (props.isPlayerBoard || props.gameState.playing == false) {
         return;
       } else if (!props.isPlayerBoard) {
+        console.log("here");
         emit("shot", x, y);
       }
     }
@@ -55,11 +65,14 @@ export default {
   --flax: hsla(54, 63%, 71%, 1);
   --old-lavender: hsla(273, 5%, 42%, 1);
 }
-.board.player {
+.board {
   cursor: not-allowed;
 }
-.board.com {
+.board.com.active {
   cursor: crosshair;
+}
+.board.player.active {
+  cursor: grabbing;
 }
 .cell {
   display: flex;
