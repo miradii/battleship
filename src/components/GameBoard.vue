@@ -27,9 +27,9 @@
       >
         <span class="missed" v-if="cell == -Infinity"> &#9675;</span>
         <span class="sunk" v-else-if="cell < 0">&#10008;</span>
-        <span v-if="isShipCell(cell, xIndex, yIndex)">
-          <Ship draggable="true" :ship="getShip(cell)"
-        /></span>
+        <div v-if="isShipCell(cell, xIndex, yIndex)">
+          <Ship draggable="true" :ship="getShip(cell)" />
+        </div>
       </div>
       <br />
     </div>
