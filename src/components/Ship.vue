@@ -1,5 +1,8 @@
 <template>
-  <div class="ship" :class={vertical:!ship.isHorizontal,horizontal:ship.isHorizontal}>
+  <div
+    class="ship"
+    :class="{ vertical: !ship.isHorizontal, horizontal: ship.isHorizontal }"
+  >
     <div class="shipblock" v-for="x in ship.getCoordinates()" :key="x"></div>
   </div>
 </template>
@@ -12,13 +15,21 @@ export default {
 
 <style>
 .shipblock {
-  width: 100%;
-  height: 100%;
+  display: inline-block;
+  width: 30px;
+  height: 30px;
+  margin: 8px 7px;
+  border: 1px white solid;
   color: antiquewhite;
+  background: hsla(273, 5%, 42%, 0.6);
+  z-index: 2;
 }
 .ship.horizontal {
-    z-index: -1;
-    display: flex;
-    flex-direction: row; 
-  }
+  display: flex;
+  flex-direction: column;
+}
+.ship.vertical {
+  display: flex;
+  flex-direction: row;
+}
 </style>

@@ -11,6 +11,18 @@ function createShip(lengthInput) {
         this.coordinates.reduce((acc, position) => acc && position < 0, true)
       );
     },
+    getStartingCordinate() {
+      let x;
+      let y;
+      if (this.isHorizontal) {
+        y = this.fixedCordinate.y;
+        x = this.coordinates[0];
+      } else {
+        x = this.fixedCordinate.x;
+        y = this.coordinates[0];
+      }
+      return { x, y };
+    },
     setCoordinates(array, fixed) {
       this.coordinates = array;
       if (this.isHorizontal) {

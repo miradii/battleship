@@ -18,6 +18,7 @@
           com: !isPlayerBoard,
           missed: cell == -Infinity,
           sunk: cell < 0 && cell != -Infinity,
+          ship: isShipCell(cell, xIndex, yIndex),
         }"
         :data-x="xIndex"
         :data-y="yIndex"
@@ -26,7 +27,9 @@
       >
         <span class="missed" v-if="cell == -Infinity"> &#9675;</span>
         <span class="sunk" v-else-if="cell < 0">&#10008;</span>
-        <span v-else-if="isPlayerBoard">{{ cell }}</span>
+        <span v-if="isShipCell(cell, xIndex, yIndex)">
+          <Ship draggable="true" :ship="getShip(cell)"
+        /></span>
       </div>
       <br />
     </div>
@@ -34,8 +37,11 @@
 </template>
 
 <script>
+import { computed } from "@vue/reactivity";
+import Ship from "./Ship.vue";
 export default {
   props: ["gameboard", "isPlayerBoard", "gameState"],
+  components: { Ship },
   setup(props, { emit }) {
     function handleCellClick(x, y) {
       if (props.isPlayerBoard || props.gameState.playing == false) {
@@ -45,7 +51,20 @@ export default {
         emit("shot", x, y);
       }
     }
-    return { handleCellClick };
+
+    const ships = computed(() => props.gameboard.shipsOnTheBoard);
+    const getShip = (shipId) => {
+      shipId = Math.abs(shipId);
+      return ships.value.get(shipId);
+    };
+
+    const isShipCell = (cell, xIndex, yIndex) =>
+      props.isPlayerBoard &&
+      getShip(cell) != undefined &&
+      getShip(cell).getStartingCordinate().x == xIndex &&
+      getShip(cell).getStartingCordinate().y == yIndex;
+
+    return { handleCellClick, ships, getShip, isShipCell };
   },
 };
 </script>
@@ -56,6 +75,7 @@ export default {
   height: 450px;
   border: 1px beige solid;
   display: grid;
+  gap: 3px;
   grid-template-columns: repeat(10, 10%);
   grid-template-rows: repeat(10, 10%);
   margin: 30px 30px;
@@ -78,12 +98,15 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  content: "";
-  background: var(--beau-blue);
+  background: hsla(209, 69%, 84%, 1);
   border: 2px var(--rich-black-fogra-29) solid;
   margin: 0;
   width: 100%;
   height: 100%;
+}
+.cell.ship {
+  align-items: flex-start;
+  justify-content: flex-start;
 }
 .cell.com:hover {
   background: var(--flax);
