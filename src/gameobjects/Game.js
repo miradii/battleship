@@ -5,7 +5,7 @@ function startGame() {
   const turn = [];
   turn["player"] = true;
   turn["com"] = false;
-  const gameState = { playing: false, paused: true, over: false };
+  const gameState = { setup: true, playing: false, paused: false, over: false };
   const playerShips = [];
   playerShips.push(createShip(2));
   playerShips.push(createShip(3));
@@ -22,7 +22,11 @@ function startGame() {
 
   const playerGameBoard = createGameBoard();
   const comGameBoard = createGameBoard();
-  randomizeShips(playerGameBoard, playerShips);
+
+  for (let i = 0; i < playerShips.length; i++) {
+    playerGameBoard.shipsOnTheBoard.set(i + 1, playerShips[i]);
+  }
+
   randomizeShips(comGameBoard, comShips);
   const player = createPlayer(true, comGameBoard, turn);
   const comPlayer = createPlayer(false, playerGameBoard, turn);

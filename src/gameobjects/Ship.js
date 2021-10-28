@@ -36,7 +36,9 @@ function createShip(lengthInput) {
     },
     hit(position) {
       const index = this.coordinates.indexOf(position);
-      this.coordinates[index] = 0 - this.coordinates[index];
+      if (this.coordinates[index] == 0) {
+        this.coordinates[index] = -10;
+      } else this.coordinates[index] = 0 - this.coordinates[index];
     },
     changeDirection() {
       this.isHorizontal = !this.isHorizontal;

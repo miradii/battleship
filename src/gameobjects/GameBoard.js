@@ -9,32 +9,33 @@ export function createGameBoard() {
     placeShip(ship, xCordinate, yCordinate, id) {
       this.numberOfShips++;
       let startingPoint = 0;
+      if (this.isThereSpaceAt(xCordinate, yCordinate, ship)) {
+        if (ship.isHorizontal) {
+          for (let i = 0; i < ship.length; i++) {
+            //set location of the grid to the ship id
+            this.grid[yCordinate][xCordinate + i] = this.numberOfShips;
+          }
+          startingPoint = xCordinate;
+        } else {
+          for (let i = 0; i < ship.length; i++) {
+            //set location of the grid to the ship id
+            this.grid[yCordinate + i][xCordinate] = this.numberOfShips;
+          }
+          startingPoint = yCordinate;
+        }
 
-      if (ship.isHorizontal) {
-        for (let i = 0; i < ship.length; i++) {
-          //set location of the grid to the ship id
-          this.grid[yCordinate][xCordinate + i] = this.numberOfShips;
-        }
-        startingPoint = xCordinate;
-      } else {
-        for (let i = 0; i < ship.length; i++) {
-          //set location of the grid to the ship id
-          this.grid[yCordinate + i][xCordinate] = this.numberOfShips;
-        }
-        startingPoint = yCordinate;
+        let shipCordinates = Array(ship.length).fill(startingPoint);
+
+        shipCordinates = shipCordinates.map((el, i) => el + i);
+        ship.setCoordinates(
+          shipCordinates,
+          ship.isHorizontal ? yCordinate : xCordinate
+        );
+        const shipId = id || this.numberOfShips;
+        this.shipsOnTheBoard.set(shipId, ship);
+
+        return ship;
       }
-
-      let shipCordinates = Array(ship.length).fill(startingPoint);
-
-      shipCordinates = shipCordinates.map((el, i) => el + i);
-      ship.setCoordinates(
-        shipCordinates,
-        ship.isHorizontal ? yCordinate : xCordinate
-      );
-      const shipId = id || this.numberOfShips;
-      this.shipsOnTheBoard.set(shipId, ship);
-
-      return ship;
     },
     reposition(shipId, xCordinate, yCordinate) {
       const ship = this.shipsOnTheBoard.get(shipId);

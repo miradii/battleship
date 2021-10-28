@@ -5,6 +5,7 @@
       <GameBoard
         :gameboard="playerboard"
         :isPlayerBoard="true"
+        @setupFinished="handleSetupEnd"
         :gameState="state"
         :key="playerKey"
       />
@@ -43,15 +44,17 @@ import { watch } from "@vue/runtime-core";
 export default {
   name: "Game",
   components: {
-    Hud,
     GameBoard,
+    Hud,
   },
   setup() {
     // put everything we get from a game object on a ref so they are reactive
     let playerboard = ref(null);
     let comboard = ref(null);
     let state = ref(null);
-    let hudMessage = ref("Press Start");
+    let hudMessage = ref(
+      "place your ships where you want\nright click to rotate"
+    );
     let game = startGame();
     let { player, comPlayer, gameState } = game;
     playerboard.value = comPlayer.enemyBoard;
@@ -68,6 +71,7 @@ export default {
       (comKey.value = !comKey.value), (playerKey.value = !comKey.value);
       if (comPlayer.enemyBoard.areAllShipSunk()) {
         state.value = {
+          setup: false,
           playing: false,
           paused: false,
           over: true,
@@ -77,6 +81,7 @@ export default {
       }
       if (player.enemyBoard.areAllShipSunk()) {
         state.value = {
+          setup: false,
           playing: false,
           paused: false,
           over: true,
@@ -91,10 +96,13 @@ export default {
     const handleStart = () => {
       if (state.value.paused) {
         state.value = {
+          setup: false,
           playing: true,
           paused: false,
           over: false,
         };
+
+        hudMessage.value = "shoot enemy ships";
       } else {
         game = startGame();
         const {
@@ -108,14 +116,27 @@ export default {
         playerboard.value = comPlayer.enemyBoard;
         comboard.value = player.enemyBoard;
         state.value = gameState;
+        hudMessage.value = "position your ships strategicly";
       }
     };
     const handleStop = () => {
       state.value = {
+        setup: false,
         playing: false,
         paused: false,
         over: true,
       };
+    };
+    const handleSetupEnd = () => {
+      if (state.value.setup) {
+        state.value = {
+          setup: false,
+          playing: false,
+          paused: true,
+          over: false,
+        };
+        hudMessage.value = "press start";
+      }
     };
     return {
       playerboard,
@@ -126,6 +147,7 @@ export default {
       state,
       handleStart,
       handleStop,
+      handleSetupEnd,
       hudMessage,
     };
   },
@@ -134,11 +156,26 @@ export default {
 
 <style>
 .boards {
+  margin-top: 0px;
   display: flex;
   justify-content: center;
   width: 100%;
 }
 .controls {
-  margin: 20px 20px;
+  width: 100%;
+  display: flex;
+  margin-top: 20px;
+  align-items: center;
+  justify-content: center;
+}
+button {
+  border: none;
+  width: 140px;
+  height: 45px;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+  background: rgba(0, 180, 72, 1);
+  color: hsla(231, 28%, 10%, 1);
 }
 </style>

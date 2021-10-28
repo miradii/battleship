@@ -14,14 +14,17 @@ export default {
 
 <style scoped>
 .hud {
-  background: hsla(10, 85%, 61%, 1);
-  color: darkblue;
-  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
-    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+  color: hsla(231, 28%, 10%, 1);
+  background: hsla(0, 0%, 98%, 1);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
   font-size: 22px;
   width: 100%;
-  height: 13%;
+  text-align: center;
+  height: 8%;
   position: fixed;
+  padding: 20px;
+  padding-left: 0px;
   margin-top: 0;
   margin-left: 0;
   margin-right: 0;
